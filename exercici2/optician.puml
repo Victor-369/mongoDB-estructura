@@ -1,0 +1,78 @@
+@startuml optician
+
+title Cul d'Ampolla Optician — MongoDB Data Model
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam class {
+  BackgroundColor<<collection>> #DDEBF7
+  BorderColor<<collection>> #2F5597
+  BackgroundColor<<embedded>> #FFF2CC
+  BorderColor<<embedded>> #BF9000
+}
+hide methods
+
+' ---------- Collections ----------
+
+class Glasses <<collection>> {
+  brand : String
+  frameType : FrameType  
+  supplierId : Supplier
+  price : Decimal
+}
+
+class Supplier <<collection>> {
+  _id : ObjectId
+  name : String
+  address : Address
+  telephone : String
+  fax : String
+  taxId : String
+}
+
+class Customer <<collection>> {
+  _id : ObjectId
+  name : String
+  address : Address
+  telephone : String
+  email : String
+  registrationDate : Date
+  purchases : Purchase[]
+}
+
+enum FrameType {
+  rimless
+  acetate
+  metallic
+}
+
+' ---------- Embedded documents ----------
+
+class Address <<embedded>> {
+  street : String
+  number : String
+  floor : String
+  door : String
+  city : String
+  postcode : String
+  country : String
+}
+
+class Purchase <<embedded>> {
+  saleDate : Datetime
+  glasses : Glasses
+}
+
+' ---------- Relationships ----------
+
+Glasses ..> FrameType
+Glasses "0..*" --> "1" Supplier : supplierId
+
+Customer *-- "1" Address
+Customer *-- "0..*" Purchase : purchases
+
+Supplier *-- "1" Address
+
+Purchase *-- "1" Glasses
+
+@enduml
