@@ -103,12 +103,13 @@ db.createCollection("Order", {
         Type: { enum: ["HOME_DELIVERY", "STORE_PICKUP"] },
         Items: {
           bsonType: "array",
+          minItems: 1, // an order has at least one item
           items: {
             bsonType: "object",
             required: ["ProductId", "Quantity", "UnitPrice"],
             properties: {
-              ProductId: { bsonType: "objectId" },
-              Quantity: { bsonType: "int" },
+              ProductId: { bsonType: "objectId" }, // each item is one product
+              Quantity: { bsonType: "int", minimum: 1 },
               UnitPrice: { bsonType: "decimal" }
             }
           }
