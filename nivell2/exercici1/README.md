@@ -20,12 +20,13 @@ The order is the centre of the model: it links customers, stores, products and w
 |-----------------|---------------------------------------------------------------------------|
 | `Customer`      | Customer details. Referenced from each order via `CustomerId`.            |
 | `Order`         | Order details plus an embedded array of its `Items`.                      |
-| `Product`       | Catalogue of pizzas, burgers and drinks.                                  |
+| `Product`       | Catalogue of pizzas, burgers and drinks. Referenced from each order item via `ProductId`. |
 | `PizzaCategory` | Pizza categories. Referenced from each pizza via `PizzaCategory`.         |
 | `Store`         | Store details. Referenced from each order and each worker via `StoreId`.  |
 | `Worker`        | Store staff. Referenced from home-delivery orders via `DeliveryWorker`.   |
 
-- **Embedding**: an `OrderItem` only makes sense inside its order, so the products ordered are embedded in `Order.Items`. Each item stores the `ProductId`, the `Quantity` and the `UnitPrice`.
+- **Embedding**: an `OrderItem` only makes sense inside its order, so the products ordered are embedded in `Order.Items`. Each item stores the `ProductId`, the `Quantity` and the `UnitPrice`, and an order must have at least one item.
+- **Order items and products**: each `OrderItem` points to exactly one `Product` through its `ProductId`. If the customer wants more than one of the same product, it is the same item with a bigger `Quantity`.
 - **Price snapshot**: `UnitPrice` keeps the price at the moment of the order, so a later price change in the catalogue does not alter past orders.
 - **Referencing**: customers, stores, products, categories and workers are shared by many documents. They are kept in their own collections and referenced by `ObjectId`.
 - **Enums**: `Order.Type` is restricted to `HOME_DELIVERY` or `STORE_PICKUP`, and `Product.Type` to `PIZZA`, `BURGER` or `DRINK`.
@@ -37,6 +38,7 @@ The diagram also describes the following rules. The script only documents them i
 
 - Only pizzas have a `PizzaCategory`, and every pizza should have one.
 - `DeliveryWorker` and `DeliveredDate` are only filled in for `HOME_DELIVERY` orders.
+- The `ProductId` of each order item must exist in the `Product` collection (MongoDB does not check references).
 
 ## Data model
 
