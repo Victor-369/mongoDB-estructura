@@ -15,6 +15,14 @@ An optician wants to computerise the management of its customers, suppliers and 
 | [Exercise 1](nivell1/exercici1/README.md) | Customer | Model centred on the customer, with purchases embedded and suppliers/employees referenced. |
 | [Exercise 2](nivell1/exercici2/README.md) | Glasses  | Model centred on the glasses, which become their own collection. |
 
+### Level 2 — Food delivery
+
+A company wants a website where customers can order food online, for home delivery or store pickup.
+
+| Exercise | Description |
+|----------|-------------|
+| [Exercise 1](nivell2/exercici1/README.md) | Model centred on the order, with its items embedded and customers, stores, products, pizza categories and workers referenced. |
+
 ## Repository structure
 
 ```
@@ -29,7 +37,11 @@ mongoDB-estructura/
 │   └── exercici2/            # Optician — glasses view
 │       └── ...
 └── nivell2/
-    └── exercici1/
+    └── exercici1/            # Food delivery
+        ├── README.md
+        ├── food_delivery.js  # mongosh script (collections + validators)
+        ├── food_delivery.puml
+        └── food_delivery.png
 ```
 
 ## Requirements
