@@ -99,6 +99,8 @@ Store "1" -- "1..*" Worker : StoreId
 Order "1" *-- "1..*" OrderItem : Items
 Order ..> OrderType
 
+OrderItem "1" -- "1" Product
+
 PizzaCategory "1" -- "0..*" Product
 
 Worker "0..1" -- "0..*" Order : DeliveryWorker (only HOME_DELIVERY)
