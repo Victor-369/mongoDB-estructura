@@ -1,0 +1,108 @@
+@startuml
+title Food Delivery — MongoDB Data Model
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam class {
+  BackgroundColor<<collection>> #DDEBF7
+  BorderColor<<collection>> #2F5597
+  BackgroundColor<<embedded>> #FFF2CC
+  BorderColor<<embedded>> #BF9000
+}
+hide methods
+
+' ---------- Collections ----------
+class Customer <<collection>> {
+    _id : ObjectId
+    Name : String
+    Surname1 : String
+    Surname2 : String
+    Address : String
+    PostalCode : String
+    City : String
+    Province : String
+    Phone : String
+}
+
+class Order <<collection>> {
+    _id : ObjectId
+    CustomerId : ObjectId
+    StoreId : ObjectId
+    Date : Date
+    Type : OrderType
+    Items : OrderItem[]
+    Total : Decimal
+    Note : String
+    DeliveryWorker : Worker
+    DeliveredDate : Datetime
+}
+
+class Product <<collection>> {
+    _id : ObjectId
+    Name : String
+    Description : String
+    Image : String
+    Price : Decimal
+    Type : ProductType
+    PizzaCategory : PizzaCategory
+}
+
+class PizzaCategory <<collection>> {
+    _id : ObjectId
+    Name : String
+}
+
+class Store <<collection>> {
+    _id : ObjectId
+    Address : String
+    PostalCode : String
+    City : String
+    Province : String
+}
+
+class Worker <<collection>> {
+    _id : ObjectId
+    StoreId : ObjectId
+    Name : String
+    Surname1 : String
+    Surname2 : String
+    VatNumber : String
+    Phone : String
+}
+
+' ---------- Embedded documents ----------
+class OrderItem <<embedded>> {
+    ProductId : ObjectId
+    Quantity : Int
+    UnitPrice : Decimal
+}
+
+' ---------- Enums ----------
+enum OrderType {
+    HOME_DELIVERY
+    STORE_PICKUP
+}
+
+enum ProductType {
+    PIZZA
+    BURGER
+    DRINK
+}
+
+
+' ---------- Relationships ----------
+Customer "1" -- "0..*" Order : CustomerId
+
+Store "1" -- "0..*" Order : StoreId
+Store "1" -- "1..*" Worker : StoreId
+
+Order "1" *-- "1..*" OrderItem : Items
+Order ..> OrderType
+
+PizzaCategory "1" -- "0..*" Product
+
+Worker "0..1" -- "0..*" Order : DeliveryWorker (only HOME_DELIVERY)
+
+Product ..> ProductType
+
+@enduml
