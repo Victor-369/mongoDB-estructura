@@ -1,0 +1,102 @@
+@startuml optician
+
+title Cul d'Ampolla Optician — MongoDB Data Model
+
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam class {
+  BackgroundColor<<collection>> #DDEBF7
+  BorderColor<<collection>> #2F5597
+  BackgroundColor<<embedded>> #FFF2CC
+  BorderColor<<embedded>> #BF9000
+}
+hide methods
+
+' ---------- Collections ----------
+
+class Customer <<collection>> {
+  _id : ObjectId
+  name : String
+  address : Address
+  telephone : String
+  email : String
+  registrationDate : Date
+  purchases : Purchase[]
+}
+
+class Supplier <<collection>> {
+  _id : ObjectId
+  name : String
+  address : Address
+  telephone : String
+  fax : String
+  taxId : String
+}
+
+class Employee <<collection>> {
+  _id : ObjectId
+  firstName : String
+  lastName : String
+}
+
+' ---------- Embedded documents ----------
+
+class Address <<embedded>> {
+  street : String
+  number : String
+  floor : String
+  door : String
+  city : String
+  postcode : String
+  country : String
+}
+
+class Purchase <<embedded>> {
+  saleDate : Datetime
+  soldBy : SoldBy
+  glasses : Glasses
+}
+
+class SoldBy <<embedded>> {
+  employeeId : Employee
+  name : String
+}
+
+class Glasses <<embedded>> {
+  brand : String
+  supplierId : Supplier
+  prescription : PerLens
+  frameType : FrameType
+  frameColour : String
+  lensColour : PerLens
+  price : Decimal
+}
+
+class "PerLens<T>" as PerLens <<embedded>> {
+  left : T
+  right : T
+}
+
+enum FrameType {
+  rimless
+  acetate
+  metallic
+}
+
+' ---------- Relationships ----------
+
+Customer *-- "1" Address
+Customer *-- "0..*" Purchase : purchases
+
+Purchase *-- "1" SoldBy
+Purchase *-- "1" Glasses
+
+Glasses *-- "2" PerLens : prescription /\nlensColour
+Glasses ..> FrameType
+Glasses "0..*" --> "1" Supplier : supplierId
+
+Supplier *-- "1" Address
+
+SoldBy "0..*" --> "1" Employee : employeeId
+
+@enduml
